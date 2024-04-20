@@ -1,0 +1,134 @@
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="#">CRUD Application</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarScroll"
+      aria-controls="navbarScroll" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarScroll">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item">
+          <a class="nav-link active" routerLink="registrations">Registration</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/registration/login">Login</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<div class="container mt-3">
+  <div class="row">
+    <h2 class="text-center">User Registration</h2>
+
+    <div class="col-lg-4 col-md-12 col-sm-12 mt-2">
+      <img src="../../assets/Images/register.png" class="w-75" alt="register">
+    </div>
+
+    <div class="col-lg-8 col-md-12 col-sm-12 mt-2">
+      <div class="card p-4">
+        <form [formGroup]="addUsers" (ngSubmit)="AddUserDetails()">
+
+          <div class="row">
+
+            <div class="col-lg-6 col-md-12 col-sm-12">
+              <div class="mb-3">
+                <label for="Name" class="form-label">Name</label>
+                <input type="text" class="form-control" formControlName="Name">
+              </div>
+              <div class="text-danger" *ngIf="submit && addUsers.controls['Name'].errors">
+                <div *ngIf="submit && addUsers.controls['Name'].errors['required']">
+                  Enter Your Name
+                </div>
+              </div>
+            </div>
+
+            <div class="col-lg-6 col-md-12 col-sm-12">
+              <div class="mb-3">
+                <label for="Email" class="form-label">Email address</label>
+                <input type="email" class="form-control" formControlName="Email">
+              </div>
+              <div class="text-danger" *ngIf="submit && addUsers.controls['Email'].errors">
+                <div *ngIf="submit && addUsers.controls['Email'].errors['required']">
+                  Enter Your Mail ID
+                </div>
+                <div *ngIf="submit && addUsers.controls['Email'].errors['pattern']">
+                  Enter Valid Mail ID
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <div class="row">
+
+            <div class="col-lg-6 col-md-12 col-sm-12">
+              <div class="mb-3">
+                <label for="Mobile" class="form-label">Mobile</label>
+                <input type="text" class="form-control" formControlName="Mobile">
+              </div>
+              <div class="text-danger" *ngIf="submit && addUsers.controls['Mobile'].errors">
+                <div *ngIf="submit && addUsers.controls['Mobile'].errors['required']">
+                  Enter Your Mobile Number
+                </div>
+                <div *ngIf="submit && addUsers.controls['Mobile'].errors['minLength']">
+                  Enter 10 Degit Mobile Number
+                </div>
+              </div>
+            </div>
+
+            <div class="col-lg-6 col-md-12 col-sm-12">
+              <section class="btn-group" style="margin-top: 30px;">
+                <input type="radio" class="btn-check" formControlName="Gender" id="male" value="Male">
+                <label class="btn btn-light"
+                       for="male">
+                    Male
+                </label>
+
+                <input type="radio"
+                       class="btn-check"
+                       formControlName="Gender"
+                       id="Female" value="Female">
+                <label class="btn btn-light"
+                       for="Female">
+                       Female
+                </label>
+
+                <input type="radio"
+                       class="btn-check"
+                       formControlName="Gender"
+                       id="Other" value="Other">
+                <label class="btn btn-light"
+                       for="Other">
+                       Other
+                </label>
+              </section>
+              <div class="text-danger" *ngIf="submit && addUsers.controls['Gender'].errors">
+                <div *ngIf="submit && addUsers.controls['Gender'].errors['required']">
+                  Select Gender
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <div class="mb-3">
+            <label for="Password" class="form-label">Password</label>
+            <input type="password"  class="form-control" formControlName="Password">
+            <div class="text-danger" *ngIf="submit && addUsers.controls['Password'].errors">
+              <div *ngIf="submit && addUsers.controls['Password'].errors['required']">
+                Enter Your Password
+              </div>
+              <div *ngIf="submit && addUsers.controls['Password'].errors['minLength']">
+                Enter Minimum 6 Character
+              </div>
+            </div>
+          </div>
+          <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+      </div>
+    </div>
+
+  </div>
+</div>

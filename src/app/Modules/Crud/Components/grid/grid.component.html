@@ -1,0 +1,294 @@
+<!--Header-->
+<div class="header-menu mt-2">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-lg-7 col-md-7 col-sm-7  d-flex justify-content-center align-items-center">
+        <h2>SELVAM Bakery</h2>
+      </div>
+      <div class="col-lg-5 col-md-5 col-sm-5 links">
+
+        <!-- <i class="fa-solid fa-bell noti"></i> -->
+        <button mat-button [matMenuTriggerFor]="belowMenu" class="username"><i class="fa-solid fa-user me-2"></i>{{ name
+          }}</button>
+        <mat-menu #belowMenu="matMenu" yPosition="below">
+          <button mat-menu-item (click)="logout()">Logot</button>
+        </mat-menu>
+      </div>
+      <!-- <i class="fa-solid fa-user user"></i> -->
+    </div>
+  </div>
+</div>
+
+<div class="container-fluid">
+  <h1 class="mt-3">Your Orders</h1>
+  <div class="search-container mt-2">
+    <mat-form-field appearance="fill">
+      <input matInput placeholder="search" autocomplete="off" (keyup)="applyFilter($event)">
+    </mat-form-field>
+    <button mat-fab extended color="primary" class="float-end" data-bs-toggle="modal" data-bs-target="#AddCakes">
+      Add
+    </button>
+  </div>
+
+  <div class="table-responsive">
+    <table mat-table matSort [dataSource]="dataSource" class="mat-elevation-z8 table table-striped">
+
+      <ng-container matColumnDef="UserId" class="hide">
+        <th mat-header-cell *matHeaderCellDef class="hide">UserId</th>
+        <td mat-cell *matCellDef="let element" class="hide"> {{ element.userId}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="id" class="hide">
+        <th mat-header-cell *matHeaderCellDef class="hide">Id</th>
+        <td mat-cell *matCellDef="let element" class="hide"> {{ element.id}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="Category">
+        <th mat-header-cell mat-sort-header *matHeaderCellDef>Category</th>
+        <td mat-cell *matCellDef="let element"> {{element.category}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="Name">
+        <th mat-header-cell mat-sort-header *matHeaderCellDef>Name</th>
+        <td mat-cell *matCellDef="let element"> {{element.cakeName}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="Quantity">
+        <th mat-header-cell mat-sort-header *matHeaderCellDef>Quantity</th>
+        <td mat-cell *matCellDef="let element"> {{element.quantity}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="Price">
+        <th mat-header-cell mat-sort-header *matHeaderCellDef>Price</th>
+        <td mat-cell *matCellDef="let element"> {{element.price}} </td>
+      </ng-container>
+
+
+      <ng-container matColumnDef="Options">
+        <th mat-header-cell *matHeaderCellDef>Options</th>
+        <td mat-cell *matCellDef="let element" class=""><span><i class="fa-solid fa-pen-to-square EditIcon"
+          data-bs-toggle="modal" data-bs-target="#EditCakes" (click)="EditCakes(this.element.id)" matTooltip="Edit" ></i></span><span><i
+              class="fa-solid fa-trash ms-2 DeleteIcon" (click)="deleteCake(this.element.id)" matTooltip="Delete"></i></span></td>
+              <!-- <td mat-cell *matCellDef="let element" class=""><span><i class="fa-solid fa-pen-to-square EditIcon"
+                routerLink="/crud/edit/{{element.id}}" matTooltip="Edit" ></i></span><span><i
+                    class="fa-solid fa-trash ms-2 DeleteIcon" matTooltip="Delete"></i></span></td> -->
+      </ng-container>
+
+      <tr class="mat-row" *matNoDataRow>
+        <td class="mat-cell" colspan="4">No data Added</td>
+      </tr>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+  </div>
+
+  <mat-paginator #paginator [pageSizeOptions]="[10,15,20,25,30]">
+  </mat-paginator>
+
+
+</div>
+
+<!-- Add Form -->
+<div class="modal fade" id="AddCakes" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 class="modal-title" id="exampleModalLabel">Add Your's Favorite</h2>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="AddCakes">
+          <div class="row">
+            <div class="col-12">
+              <div class="form-check form-check-inline">
+                <mat-radio-group aria-label="Select an option" [formControlName]="'category'">
+                  <mat-radio-button value="Cakes" (change)="selectCake()">Cakes</mat-radio-button>&nbsp;
+                  <mat-radio-button value="Snacks" (change)="selectSnacks()">Snacks</mat-radio-button>
+                </mat-radio-group>
+              </div>
+            </div>
+          </div>
+          <div *ngIf="Cake">
+            <div class="row">
+              <div class="col-lg-12 col-md-12 col-sm-12">
+                <div class="form-group">
+                  <label for="CakeName" class="form-label">Select Your Favorite Cake</label>
+                  <select [(ngModel)]="selectedCake" [formControlName]="'cakeName'" (change)="calculatePrice()" class="form-select" aria-label="Default select example">
+                    <option value="">Select Cake</option>
+                    @for (Cake of Cakes; track Cake) {
+                      <option [value]="Cake">{{Cake}}</option>
+                    }
+                  </select>
+                </div>
+              </div>
+            </div>
+            <div class="row mt-2">
+              <div class="col-lg-12 col-md-12 col-sm-12">
+                <div class="form-group">
+                  <label for="Quantity" class="form-label">Select Pieces</label>
+                  <select [(ngModel)]="selectedQuantity" [formControlName]="'quantity'" (change)="calculatePrice()" class="form-select" aria-label="Default select example">
+                    <option value="">How Many Pieces</option>
+                    @for (piece of Pieces; track piece) {
+                      <option [value]="piece">{{piece}}</option>
+                    }
+                  </select>
+                </div>
+              </div>
+            </div>
+            <div class="row mt-2">
+              <div class="col-lg-12 col-md-12 col-sm-12">
+                <div class="form-group">
+                  <label for="Price" class="form-label">Price</label>
+                  <input type="text" [(ngModel)]="price" class="form-control" [formControlName]="'price'" [ngModelOptions]="{standalone: true}"  placeholder="Price" readonly>
+                </div>
+              </div>
+            </div>
+          </div>
+         <div *ngIf="Snacks">
+            <div class="row">
+              <div class="col-lg-12 col-md-12 col-sm-12">
+                <div class="form-group">
+                  <label for="CakeName" class="form-label">Select Your Favorite Snacks</label>
+                  <select [(ngModel)]="selectedSnacks" [formControlName]="'cakeName'" [ngModelOptions]="{standalone: true}" (change)="calculatePriceforSnacks()" class="form-select" aria-label="Default select example">
+                    <option value="">Select Snacks</option>
+                    @for (snacks of Snack; track snacks) {
+                      <option [value]="snacks">{{snacks}}</option>
+                    }
+                  </select>
+                </div>
+              </div>
+            </div>
+            <div class="row mt-2">
+              <div class="col-lg-12 col-md-12 col-sm-12">
+                <div class="form-group">
+                  <label for="Quantity" class="form-label">Select Quantity</label>
+                  <select [(ngModel)]="selectedQuantity" [formControlName]="'quantity'" [ngModelOptions]="{standalone: true}" (change)="calculatePriceforSnacks()" class="form-select" aria-label="Default select example">
+                    <option value="">Select Quantity</option>
+                    @for (qty of Quantity; track qty) {
+                      <option [value]="qty">{{qty}}</option>
+                    }
+                  </select>
+                </div>
+              </div>
+            </div>
+            <div class="row mt-2">
+              <div class="col-lg-12 col-md-12 col-sm-12">
+                <div class="form-group">
+                  <label for="Price" class="form-label">Price</label>
+                  <input type="text" class="form-control" [formControlName]="'price'" [(ngModel)]="snacksPrice" [ngModelOptions]="{standalone: true}" placeholder="Price" readonly>
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary" (click)="SaveCakes()">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Edit Form -->
+<div class="modal fade" id="EditCakes" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 class="modal-title" id="exampleModalLabel">Add Your's Favorite</h2>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="EditCakesList">
+          <div class="row">
+            <div class="col-12">
+              <div class="form-check form-check-inline">
+                <mat-radio-group aria-label="Select an option" [formControlName]="'Ecategory'">
+                  <mat-radio-button value="Cakes" (change)="selectCake()">Cakes</mat-radio-button>&nbsp;
+                  <mat-radio-button value="Snacks" (change)="selectSnacks()">Snacks</mat-radio-button>
+                </mat-radio-group>
+              </div>
+            </div>
+          </div>
+          <div *ngIf="EditCakesList.controls['Ecategory'].value == 'Cakes'">
+            <div class="row">
+              <div class="col-lg-12 col-md-12 col-sm-12">
+                <div class="form-group">
+                  <label for="CakeName" class="form-label">Select Your Favorite Cake</label>
+                  <select [(ngModel)]="selectedCake" [formControlName]="'EcakeName'" (change)="calculatePrice()" class="form-select" aria-label="Default select example">
+                    <option value="">Select Cake</option>
+                    @for (Cake of Cakes; track Cake) {
+                      <option [value]="Cake">{{Cake}}</option>
+                    }
+                  </select>
+                </div>
+              </div>
+            </div>
+            <div class="row mt-2">
+              <div class="col-lg-12 col-md-12 col-sm-12">
+                <div class="form-group">
+                  <label for="Quantity" class="form-label">Select Pieces</label>
+                  <select [(ngModel)]="selectedQuantity" [formControlName]="'Equantity'" (change)="calculatePrice()" class="form-select" aria-label="Default select example">
+                    <option value="">How Many Pieces</option>
+                    @for (piece of Pieces; track piece) {
+                      <option [value]="piece">{{piece}}</option>
+                    }
+                  </select>
+                </div>
+              </div>
+            </div>
+            <div class="row mt-2">
+              <div class="col-lg-12 col-md-12 col-sm-12">
+                <div class="form-group">
+                  <label for="Price" class="form-label">Price</label>
+                  <input type="text" [(ngModel)]="price" class="form-control" [formControlName]="'Eprice'" [ngModelOptions]="{standalone: true}"  placeholder="Price" readonly>
+                </div>
+              </div>
+            </div>
+          </div>
+         <div *ngIf="EditCakesList.controls['Ecategory'].value == 'Snacks'">
+            <div class="row">
+              <div class="col-lg-12 col-md-12 col-sm-12">
+                <div class="form-group">
+                  <label for="CakeName" class="form-label">Select Your Favorite Snacks</label>
+                  <select [(ngModel)]="selectedSnacks" [formControlName]="'EcakeName'" [ngModelOptions]="{standalone: true}" (change)="calculatePriceforSnacks()" class="form-select" aria-label="Default select example">
+                    <option value="">Select Snacks</option>
+                    @for (snacks of Snack; track snacks) {
+                      <option [value]="snacks">{{snacks}}</option>
+                    }
+                  </select>
+                </div>
+              </div>
+            </div>
+            <div class="row mt-2">
+              <div class="col-lg-12 col-md-12 col-sm-12">
+                <div class="form-group">
+                  <label for="Quantity" class="form-label">Select Quantity</label>
+                  <select [(ngModel)]="selectedQuantity" [formControlName]="'Equantity'" [ngModelOptions]="{standalone: true}" (change)="calculatePriceforSnacks()" class="form-select" aria-label="Default select example">
+                    <option value="">Select Quantity</option>
+                    @for (qty of Quantity; track qty) {
+                      <option [value]="qty">{{qty}}</option>
+                    }
+                  </select>
+                </div>
+              </div>
+            </div>
+            <div class="row mt-2">
+              <div class="col-lg-12 col-md-12 col-sm-12">
+                <div class="form-group">
+                  <label for="Price" class="form-label">Price</label>
+                  <input type="text" class="form-control" [formControlName]="'Eprice'" [(ngModel)]="snacksPrice" [ngModelOptions]="{standalone: true}" placeholder="Price" readonly>
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary" (click)="UpdateCakes()">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>

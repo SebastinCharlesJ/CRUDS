@@ -1,0 +1,112 @@
+<!--Header-->
+<div class="header-menu mt-2">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-lg-7 col-md-7 col-sm-7  d-flex justify-content-center align-items-center">
+        <h2>SELVAM Bakery</h2>
+      </div>
+      <div class="col-lg-5 col-md-5 col-sm-5 links">
+
+        <!-- <i class="fa-solid fa-bell noti"></i> -->
+        <button mat-button [matMenuTriggerFor]="belowMenu" class="username"><i class="fa-solid fa-user me-2"></i>{{ name
+          }}</button>
+        <mat-menu #belowMenu="matMenu" yPosition="below">
+          <button mat-menu-item (click)="logout()">Logot</button>
+        </mat-menu>
+      </div>
+      <!-- <i class="fa-solid fa-user user"></i> -->
+    </div>
+  </div>
+</div>
+
+<div class="container">
+  <form [formGroup]="AddCakes">
+    <div class="row">
+      <div class="col-12">
+        <div class="form-check form-check-inline">
+          <mat-radio-group aria-label="Select an option" formControlName="category">
+            <mat-radio-button value="Cakes" [disabled]="true">Cakes</mat-radio-button>&nbsp;
+            <mat-radio-button value="Snacks" [disabled]="true">Snacks</mat-radio-button>
+          </mat-radio-group>
+        </div>
+      </div>
+    </div>
+    <div *ngIf="AddCakes.controls['category'].value == 'Cakes'">
+      <div class="row">
+        <div class="col-lg-12 col-md-12 col-sm-12">
+          <div class="form-group">
+            <label for="CakeName" class="form-label">Select Your Favorite Cake</label>
+            <select [(ngModel)]="selectedCake" [formControlName]="'cakeName'" (change)="calculatePrice()" class="form-select" aria-label="Default select example">
+              <!-- <option value="">Select Cake</option> -->
+              @for (Cake of Cakes; track Cake) {
+                <option [value]="Cake">{{Cake}}</option>
+              }
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="row mt-2">
+        <div class="col-lg-12 col-md-12 col-sm-12">
+          <div class="form-group">
+            <label for="Quantity" class="form-label">Select Pieces</label>
+            <select [(ngModel)]="selectedQuantity" formControlName="quantity" (change)="calculatePrice()" class="form-select" aria-label="Default select example">
+              <option value="">How Many Pieces</option>
+              @for (piece of Pieces; track piece) {
+                <option [value]="piece">{{piece}}</option>
+              }
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="row mt-2">
+        <div class="col-lg-12 col-md-12 col-sm-12">
+          <div class="form-group">
+            <label for="Price" class="form-label">Price</label>
+            <input type="text" [(ngModel)]="price" class="form-control" [formControlName]="'price'" [ngModelOptions]="{standalone: true}"  placeholder="Price" readonly>
+          </div>
+        </div>
+      </div>
+    </div>
+   <div *ngIf="AddCakes.controls['category'].value == 'Snacks'">
+      <div class="row">
+        <div class="col-lg-12 col-md-12 col-sm-12">
+          <div class="form-group">
+            <label for="CakeName" class="form-label">Select Your Favorite Snacks</label>
+            <select [(ngModel)]="selectedSnacks" [formControlName]="'cakeName'" (change)="calculatePriceforSnacks()" class="form-select" aria-label="Default select example">
+              <option value="">Select Snacks</option>
+              @for (snacks of Snack; track snacks) {
+                <option [value]="snacks">{{snacks}}</option>
+              }
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="row mt-2">
+        <div class="col-lg-12 col-md-12 col-sm-12">
+          <div class="form-group">
+            <label for="Quantity" class="form-label">Select Quantity</label>
+            <select [(ngModel)]="selectedQuantity" [formControlName]="'quantity'" (change)="calculatePriceforSnacks()" class="form-select" aria-label="Default select example">
+              <option value="">Select Quantity</option>
+              @for (qty of Quantity; track qty) {
+                <option [value]="qty">{{qty}}</option>
+              }
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="row mt-2">
+        <div class="col-lg-12 col-md-12 col-sm-12">
+          <div class="form-group">
+            <label for="Price" class="form-label">Price</label>
+            <input type="text" class="form-control" [formControlName]="'price'" [(ngModel)]="snacksPrice" [ngModelOptions]="{standalone: true}" placeholder="Price" readonly>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>
+
+<div class="container">
+  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+  <button type="button" class="btn btn-primary" (click)="UpdateCakes()">Save changes</button>
+</div>

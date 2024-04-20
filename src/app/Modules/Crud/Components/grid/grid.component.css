@@ -1,0 +1,16 @@
+.hide{
+  display: none;
+}
+
+.EditIcon, .DeleteIcon{
+  cursor: pointer;
+}
+
+.custom-select-panel {
+  top: auto !important;
+  bottom: 100% !important;
+}
+
+.custom-select-panel .mat-option {
+  margin-top: -1px; /* Adjust as needed */
+}
